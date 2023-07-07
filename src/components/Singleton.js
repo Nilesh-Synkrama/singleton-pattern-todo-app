@@ -8,7 +8,7 @@ class TodoList {
     return TodoList.instance;
   }
   addTodo = (todo) => {
-    this.todos.push(todo);
+    this.todos.unshift(todo);
     this.updateLocalStorage(this.todos);
   };
   updateTodo = (todo) => {

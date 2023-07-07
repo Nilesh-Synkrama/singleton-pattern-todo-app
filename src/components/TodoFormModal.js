@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "react-modal";
 import Todos from "./Singleton";
+import { useContext } from "react";
+import { AppContext } from "../App";
 
 const TodoFormModal = ({
   isOpen,
@@ -13,6 +15,7 @@ const TodoFormModal = ({
   isEdit,
 }) => {
   const [modalWidth, setModalWidth] = useState("");
+  const { displaySnackbar } = useContext(AppContext);
   const {
     register,
     handleSubmit,
@@ -20,19 +23,29 @@ const TodoFormModal = ({
     reset,
   } = useForm();
   const onSubmit = (values) => {
-    isEdit
-      ? Todos.updateTodo({
-          name: values.name,
-          creationDate: data.creationDate,
-          age: new Date(values.date),
-          id: data.id,
-        })
-      : Todos.addTodo({
-          name: values.name,
-          creationDate: new Date(),
-          age: new Date(values.date),
-          id: new Date(),
-        });
+    if (isEdit) {
+      Todos.updateTodo({
+        name: values.name,
+        creationDate: data.creationDate,
+        age: new Date(values.date),
+        id: data.id,
+      });
+      displaySnackbar({
+        type: "success",
+        message: "Todo updated Successfully",
+      });
+    } else {
+      Todos.addTodo({
+        name: values.name,
+        creationDate: new Date(),
+        age: new Date(values.date),
+        id: new Date(),
+      });
+      displaySnackbar({
+        type: "success",
+        message: "Todo Added Successfully",
+      });
+    }
     setTodo(Todos.todos);
     setIsOpen(false);
   };
